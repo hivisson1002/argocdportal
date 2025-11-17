@@ -1,0 +1,43 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudnative-pg-operator
+  namespace: argocd
+  labels:
+    app: cloudnative-pg
+    type: operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+spec:
+  project: default
+
+  source:
+    repoURL: 'https://cloudnative-pg.github.io/charts'
+    chart: cloudnative-pg
+    targetRevision: 0.21.0
+    helm:
+      values: |
+        fullnameOverride: cloudnative-pg-operator
+        config:
+          data:
+            INHERITED_ANNOTATIONS: ""
+            INHERITED_LABELS: ""
+            WATCH_NAMESPACE: ""
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: cloudnative-pg-system
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
