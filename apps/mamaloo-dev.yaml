@@ -11,7 +11,7 @@ spec:
   
   source:
     repoURL: 'https://github.com/Analarie/Portal-Mamaloo-desenvolvimento.git'
-    targetRevision: desenvolvimento
+    targetRevision: main
     path: helm/mamaloo-app
     helm:
       valueFiles:
